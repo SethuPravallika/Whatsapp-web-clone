@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const webhookRoutes = require('./routes/webhooks');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -11,7 +12,7 @@ const PORT = process.env.PORT || 5002;
 // Middleware
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001'], // Your React app's URL
+  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001'], 
   credentials: true
 }));
 
@@ -27,8 +28,6 @@ mongoose.connect(process.env.MONGODB_URI, {
 app.use('/api', webhookRoutes);
 
 // Health check endpoint
-
-// Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ 
     status: 'OK', 
@@ -36,8 +35,6 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
-
-
 
 // Import sample data endpoint
 app.post('/api/import-sample-data', async (req, res) => {
@@ -76,7 +73,17 @@ app.post('/api/import-sample-data', async (req, res) => {
   }
 });
 
+// Serve React frontend in production
+if (process.env.NODE_ENV === 'production') {
+  const frontendBuildPath = path.join(__dirname, '../frontend/build');
+  app.use(express.static(frontendBuildPath));
 
-app.listen(5002, () => {
-  console.log(`Server running on port 5002`);
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendBuildPath, 'index.html'));
+  });
+}
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
