@@ -9,7 +9,7 @@ import './App.css';
 console.log('API Base URL:', process.env.REACT_APP_API_BASE);
 console.log('Frontend environment variables:', process.env);
 
-const API_BASE = process.env.REACT_APP_API_BASE;
+const API_BASE = 'https://your-backend-name.onrender.com/api';
 
 // Optional: log to verify
 console.log('API Base URL:', API_BASE);
