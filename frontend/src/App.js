@@ -9,10 +9,11 @@ import './App.css';
 console.log('API Base URL:', process.env.REACT_APP_API_BASE);
 console.log('Frontend environment variables:', process.env);
 
+const API_BASE = process.env.REACT_APP_API_BASE;
 
+// Optional: log to verify
+console.log('API Base URL:', API_BASE);
 
-// Hardcode the API base for now - change this to your actual port
-const API_BASE = 'http://localhost:5002/api';
 
 // Add axios interceptor for better error handling
 axios.interceptors.response.use(
